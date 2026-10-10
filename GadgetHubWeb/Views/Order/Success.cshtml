@@ -1,0 +1,455 @@
+﻿@model GadgetHubWeb.Models.OrderResponse
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #F5F5F5;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .header {
+            background: #1976D2;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .success-header {
+            background: #4CAF50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: #4CAF50;
+        }
+
+        .success-header h2 {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .success-header p {
+            font-size: 1em;
+            opacity: 0.95;
+        }
+
+        .order-details {
+            padding: 32px;
+        }
+
+        .detail-section {
+            margin-bottom: 24px;
+        }
+
+            .detail-section h3 {
+                color: #424242;
+                font-size: 1.1em;
+                margin-bottom: 16px;
+                font-weight: 600;
+                border-bottom: 2px solid #E0E0E0;
+                padding-bottom: 8px;
+            }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+
+        .detail-label {
+            font-weight: 500;
+            color: #757575;
+            font-size: 0.9em;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #212121;
+            font-size: 0.9em;
+            text-align: right;
+        }
+
+        .highlight {
+            color: #1976D2;
+            font-size: 1.2em;
+        }
+
+        .total-amount {
+            background: #E3F2FD;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #424242;
+        }
+
+        .total-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #1976D2;
+        }
+
+        .split-order-badge {
+            display: inline-block;
+            background: #FF9800;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .distributor-section {
+            background: #FFF3E0;
+            padding: 20px;
+            border-radius: 4px;
+            border-left: 4px solid #FF9800;
+            margin: 20px 0;
+        }
+
+            .distributor-section h4 {
+                color: #E65100;
+                font-size: 1em;
+                margin-bottom: 12px;
+                font-weight: 600;
+            }
+
+        .distributor-card {
+            background: white;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            border: 1px solid #FFE0B2;
+        }
+
+            .distributor-card:last-child {
+                margin-bottom: 0;
+            }
+
+        .distributor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #FFE0B2;
+        }
+
+        .distributor-name {
+            font-weight: 600;
+            color: #E65100;
+            font-size: 1em;
+        }
+
+        .distributor-order-id {
+            font-size: 0.85em;
+            color: #757575;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .product-item-name {
+            color: #424242;
+        }
+
+        .product-item-price {
+            color: #1976D2;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            padding: 0 32px 32px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #1976D2;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: #1565C0;
+            }
+
+        .btn-secondary {
+            background: white;
+            color: #1976D2;
+            border: 1px solid #1976D2;
+        }
+
+            .btn-secondary:hover {
+                background: #E3F2FD;
+            }
+
+        .message-box {
+            background: #E8F5E9;
+            padding: 16px;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+            margin-bottom: 24px;
+        }
+
+            .message-box p {
+                color: #2E7D32;
+                font-size: 0.9em;
+                font-weight: 500;
+            }
+
+        @@media (max-width: 600px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>The Gadget Hub</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="success-card">
+            <div class="success-header">
+                <div class="success-icon">✓</div>
+                <h2>Order Confirmed!</h2>
+                <p>Your order has been successfully placed</p>
+            </div>
+
+            <div class="order-details">
+                <div class="message-box">
+                    <p>@Model.Message</p>
+                </div>
+
+                <div class="detail-section">
+                    <h3>
+                        Order Information
+                        @if (Model.IsSplitOrder)
+                        {
+                        <span class="split-order-badge">SPLIT ORDER</span>
+                        }
+                    </h3>
+                    <div class="detail-row">
+                        <span class="detail-label">Order ID</span>
+                        <span class="detail-value highlight">#@Model.OrderId</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Order Date</span>
+                        <span class="detail-value">@DateTime.Now.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value" style="color: #FF9800;">
+                            Awaiting Distributor Confirmation
+                        </span>
+                    </div>
+                    @if (Model.DeliveryDays.HasValue)
+                    {
+                    <div class="detail-row">
+                        <span class="detail-label">Maximum Delivery Time</span>
+                        <span class="detail-value">@Model.DeliveryDays days</span>
+                    </div>
+                    }
+                </div>
+
+                @if (Model.IsSplitOrder && Model.Distributions != null && Model.Distributions.Any())
+                {
+                <div class="distributor-section">
+                    <h4>Order Distribution Across Distributors</h4>
+                    <p style="font-size: 0.85em; color: #666; margin-bottom: 16px;">
+                        Your order has been intelligently split across multiple distributors for the best price and fastest delivery.
+                    </p>
+
+                    @foreach (var distributorGroup in Model.Distributions.GroupBy(d => d.DistributorName))
+                        {
+                            var firstItem = distributorGroup.First();
+                    <div class="distributor-card">
+                        <div class="distributor-header">
+                            <span class="distributor-name">@distributorGroup.Key</span>
+                            @if (!string.IsNullOrEmpty(firstItem.DistributorOrderId))
+                                    {
+                            <span class="distributor-order-id">Order ID: @firstItem.DistributorOrderId</span>
+                                    }
+                        </div>
+                        @foreach (var item in distributorGroup)
+                                {
+                        <div class="product-item">
+                            <span class="product-item-name">@item.Quantity x @item.ProductName</span>
+                            <span class="product-item-price">Rs. @item.TotalPrice.ToString("N2")</span>
+                        </div>
+                                }
+                        <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #FFE0B2; display: flex; justify-content: space-between; font-size: 0.85em;">
+                            <span style="color: #757575;">Delivery:</span>
+                            <span style="color: #424242; font-weight: 600;">@distributorGroup.First().DeliveryDays days</span>
+                        </div>
+                    </div>
+                        }
+                </div>
+                }
+                else if (!string.IsNullOrEmpty(Model.SelectedDistributor))
+                {
+                <div class="distributor-section">
+                    <h4>Selected Distributor</h4>
+                    <p style="font-size: 0.9em; color: #424242;">
+                        <strong>@Model.SelectedDistributor</strong> was selected based on best price and availability.
+                    </p>
+                    @if (Model.DeliveryDays.HasValue)
+                        {
+                    <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                        Estimated delivery time: <strong>@Model.DeliveryDays days</strong>
+                    </p>
+                        }
+                </div>
+                }
+
+                <div class="detail-section">
+                    <h3>Payment Summary</h3>
+                    <div class="total-amount">
+                        <div class="total-row">
+                            <span class="total-label">Total Amount</span>
+                            <span class="total-value">Rs. @Model.TotalAmount.ToString("N2")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-section" style="margin-bottom: 0;">
+                    <h3>What's Next?</h3>
+                    <div class="detail-row">
+                        <span class="detail-label">1. Order Confirmation</span>
+                        <span class="detail-value">Sent ✓</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">2. Processing</span>
+                        <span class="detail-value">In progress...</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">3. Shipping</span>
+                        <span class="detail-value">Pending</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">4. Delivery</span>
+                        <span class="detail-value">@(Model.DeliveryDays.HasValue ? Model.DeliveryDays + " days" : "TBD")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/Order/Create" class="btn btn-primary">Back to Home</a>
+                <a href="/Login/Logout" class="btn btn-secondary">Logout</a>
+            </div>
+
+            <div class="message-box" style="background: #FFF3E0; border-left-color: #FF9800;">
+                <p style="color: #E65100;">
+                    ⏳ Your order is being reviewed by our distributors.
+                    You will be notified once they confirm availability and delivery details.
+                </p>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+                <a href="/Order/Status/@Model.OrderId"
+                   style="display: inline-block; padding: 14px 32px; background: #1976D2;
+              color: white; border-radius: 4px; text-decoration: none;
+              font-weight: 600; font-size: 1em;">
+                    📦 Track Your Order
+                </a>
+                <a href="/Order/Create"
+                   style="display: inline-block; padding: 14px 32px; background: white;
+              color: #1976D2; border: 2px solid #1976D2; border-radius: 4px;
+              text-decoration: none; font-weight: 500; margin-left: 12px;">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

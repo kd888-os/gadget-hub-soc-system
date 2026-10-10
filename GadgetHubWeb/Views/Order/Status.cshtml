@@ -1,0 +1,451 @@
+﻿@model GadgetHubWeb.Models.OrderStatusViewModel
+@{
+    ViewData["Title"] = "Order Status";
+    Layout = null;
+    bool isConfirmed = Model.Status == "Confirmed";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order #@Model.OrderId Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #E3F2FD;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #1976D2;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            padding: 8px 16px;
+            background: white;
+            color: #1976D2;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 24px;
+        }
+
+        .status-banner {
+            border-radius: 4px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .status-confirmed {
+            background: #E8F5E9;
+            border: 2px solid #4CAF50;
+        }
+
+        .status-pending {
+            background: #FFF3E0;
+            border: 2px solid #FF9800;
+        }
+
+        .status-icon {
+            font-size: 3em;
+            margin-bottom: 8px;
+        }
+
+        .status-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .confirmed-title {
+            color: #2E7D32;
+        }
+
+        .pending-title {
+            color: #E65100;
+        }
+
+        .status-subtitle {
+            color: #757575;
+            font-size: 0.95em;
+        }
+
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #E3F2FD;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #F5F5F5;
+            font-size: 0.9em;
+        }
+
+        .detail-label {
+            color: #757575;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #212121;
+        }
+
+        .timeline {
+            list-style: none;
+            padding: 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid #F5F5F5;
+            align-items: flex-start;
+        }
+
+        .timeline-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .timeline-done {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .timeline-pending {
+            background: #F5F5F5;
+            color: #9E9E9E;
+        }
+
+        .timeline-text strong {
+            display: block;
+            font-size: 0.9em;
+            color: #212121;
+        }
+
+        .timeline-text span {
+            font-size: 0.8em;
+            color: #757575;
+        }
+
+        .distributor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .distributor-table th {
+                background: #F5F5F5;
+                padding: 10px 14px;
+                text-align: left;
+                font-size: 0.8em;
+                font-weight: 600;
+                color: #424242;
+                text-transform: uppercase;
+            }
+
+            .distributor-table td {
+                padding: 12px 14px;
+                border-top: 1px solid #F5F5F5;
+                font-size: 0.85em;
+            }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .badge-confirmed {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .badge-pending {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .badge-rejected {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .btn-refresh {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #1976D2;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .items-table th {
+                background: #F5F5F5;
+                padding: 10px 14px;
+                text-align: left;
+                font-size: 0.8em;
+                font-weight: 600;
+                color: #424242;
+                text-transform: uppercase;
+            }
+
+            .items-table td {
+                padding: 12px 14px;
+                border-top: 1px solid #F5F5F5;
+                font-size: 0.9em;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Order #@Model.OrderId Status</h1>
+            <a href="@Url.Action("Create", "Order")" class="btn-back">← Back to Shop</a>
+        </div>
+    </div>
+
+    <div class="container">
+        @if (isConfirmed)
+        {
+        <div class="status-banner status-confirmed">
+            <div class="status-icon">✅</div>
+            <div class="status-title confirmed-title">Order Confirmed!</div>
+            <div class="status-subtitle">
+                Confirmed by @Model.SelectedDistributor —
+                Delivery in @Model.DeliveryDays days
+            </div>
+        </div>
+        }
+        else
+        {
+        <div class="status-banner status-pending">
+            <div class="status-icon">⏳</div>
+            <div class="status-title pending-title">Awaiting Confirmation</div>
+            <div class="status-subtitle">
+                Your order has been sent to distributors for review
+            </div>
+        </div>
+        }
+
+        @if (isConfirmed)
+        {
+        <div class="card">
+            <h2 class="card-title">✅ Confirmation Details</h2>
+            <div class="detail-row">
+                <span class="detail-label">Distributor</span>
+                <span class="detail-value">@Model.SelectedDistributor</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Distributor Order ID</span>
+                <span class="detail-value" style="color: #1976D2;">@Model.DistributorOrderId</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Confirmed On</span>
+                <span class="detail-value">@Model.ConfirmedDate?.ToString("MMMM dd, yyyy HH:mm")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value" style="color: #1976D2; font-size: 1.1em;">Rs. @Model.TotalAmount.ToString("N2")</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Estimated Delivery</span>
+                <span class="detail-value">@Model.DeliveryDays days (@DateTime.Now.AddDays(Model.DeliveryDays ?? 3).ToString("MMMM dd, yyyy"))</span>
+            </div>
+        </div>
+        }
+
+        <div class="card">
+            <h2 class="card-title">📦 Items Ordered</h2>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items != null)
+                    {
+                    foreach (var item in Model.Items)
+                        {
+                    <tr>
+                        <td><strong>@item.ProductName</strong></td>
+                        <td>@item.Quantity</td>
+                        <td>Rs. @item.UnitPrice.ToString("N2")</td>
+                        <td><strong>Rs. @item.TotalPrice.ToString("N2")</strong></td>
+                    </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">📊 Order Timeline</h2>
+            <ul class="timeline">
+                <li class="timeline-item">
+                    <div class="timeline-icon timeline-done">✓</div>
+                    <div class="timeline-text">
+                        <strong>Order Placed</strong>
+                        <span>@Model.OrderDate.ToString("MMM dd, yyyy HH:mm")</span>
+                    </div>
+                </li>
+                <li class="timeline-item">
+                    <div class="timeline-icon timeline-done">✓</div>
+                    <div class="timeline-text">
+                        <strong>Quotations Requested</strong>
+                        <span>Sent to TechWorld, ElectroCom & Gadget Central</span>
+                    </div>
+                </li>
+                <li class="timeline-item">
+                    <div class="timeline-icon @(isConfirmed ? "timeline-done" : "timeline-pending")">
+                        @(isConfirmed ? "✓" : "⏳")
+                    </div>
+                    <div class="timeline-text">
+                        <strong>Distributor Confirmation</strong>
+                        <span>
+                            @if (isConfirmed)
+                            {
+                            @($"Confirmed by {Model.SelectedDistributor}")
+                            }
+                            else
+                            {
+                            @("Waiting for distributor to confirm")
+                            }
+                        </span>
+                    </div>
+                </li>
+                <li class="timeline-item">
+                    <div class="timeline-icon timeline-pending">📦</div>
+                    <div class="timeline-text">
+                        <strong>Shipped</strong>
+                        <span>Pending</span>
+                    </div>
+                </li>
+                <li class="timeline-item">
+                    <div class="timeline-icon timeline-pending">🏠</div>
+                    <div class="timeline-text">
+                        <strong>Delivered</strong>
+                        <span>Pending</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">🏪 Distributor Quotations</h2>
+            <table class="distributor-table">
+                <thead>
+                    <tr>
+                        <th>Distributor</th>
+                        <th>Price</th>
+                        <th>Delivery</th>
+                        <th>Status</th>
+                        <th>Order ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.QuotationSummaries != null)
+                    {
+                    foreach (var q in Model.QuotationSummaries)
+                        {
+                    <tr>
+                        <td><strong>@q.DistributorName</strong></td>
+                        <td>Rs. @q.TotalPrice.ToString("N2")</td>
+                        <td>@q.DeliveryDays days</td>
+                        <td>
+                            @if (q.Status == "Confirmed")
+                                    {
+                            <span class="status-badge badge-confirmed">✓ Confirmed</span>
+                                    }
+                                    else if (q.Status == "Rejected")
+                                    {
+                            <span class="status-badge badge-rejected">✗ Rejected</span>
+                                    }
+                                    else
+                                    {
+                            <span class="status-badge badge-pending">⏳ Pending</span>
+                                    }
+                        </td>
+                        <td>@(string.IsNullOrEmpty(q.DistributorOrderId) ? "-" : q.DistributorOrderId)</td>
+                    </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            @if (!isConfirmed)
+            {
+            <a href="@Url.Action("Status", "Order", new { id = Model.OrderId })" class="btn-refresh">
+                🔄 Refresh Status
+            </a>
+            }
+        </div>
+    </div>
+</body>
+</html>

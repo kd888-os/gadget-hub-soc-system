@@ -1,0 +1,68 @@
+﻿@model GadgetHubWeb.Models.CustomerOrderViewModel
+@{
+    string badgeClass = Model.Status switch
+    {
+        "Confirmed" => "s-confirmed",
+        "Awaiting Distributor Confirmation" => "s-awaiting",
+        "All Quotations Rejected" => "s-rejected",
+        _ => "s-pending"
+    };
+    string statusText = Model.Status switch
+    {
+        "Confirmed" => "✅ Confirmed",
+        "Awaiting Distributor Confirmation" => "⏳ Awaiting Confirmation",
+        "Pending Confirmation" => "⏳ Pending",
+        "All Quotations Rejected" => "❌ Rejected",
+        _ => Model.Status ?? "Pending"
+    };
+}
+
+<div class="order-card">
+    <div class="order-header">
+        <div>
+            <div class="order-id">
+                Order #@Model.OrderId
+                @if (Model.IsSplitOrder)
+                {
+                <span class="split-badge">SPLIT</span>
+                }
+            </div>
+            <div class="order-date">
+                Placed @Model.OrderDate.ToString("MMMM dd, yyyy 'at' HH:mm")
+            </div>
+        </div>
+        <span class="status-badge @badgeClass">@statusText</span>
+    </div>
+
+    <div class="order-body">
+        @if (Model.Items != null && Model.Items.Any())
+        {
+        foreach (var item in Model.Items)
+            {
+        <div class="order-item">
+            <span>@item.Quantity × @item.ProductName</span>
+            <span>Rs. @((item.UnitPrice * item.Quantity).ToString("N2"))</span>
+        </div>
+            }
+        }
+    </div>
+
+    <div class="order-footer">
+        <div>
+            <div class="order-total">Rs. @Model.TotalAmount.ToString("N2")</div>
+            @if (!string.IsNullOrEmpty(Model.SelectedDistributor))
+            {
+            <div class="order-meta">
+                @Model.SelectedDistributor
+                @if (Model.DeliveryDays.HasValue)
+                    {
+                @($" · {Model.DeliveryDays} day delivery")
+                    }
+            </div>
+            }
+        </div>
+        <a href="@Url.Action("Status", "Order", new { id = Model.OrderId })" class="btn-track">
+            📦 Track Order
+        </a>
+    </div>
+</div>

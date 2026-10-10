@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "Register - Gadget Hub";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #E3F2FD;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .register-header {
+            background: #1976D2;
+            color: white;
+            padding: 32px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+            .register-header h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .register-header p {
+                font-size: 0.95em;
+                opacity: 0.95;
+                font-weight: 400;
+            }
+
+        .register-body {
+            padding: 32px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .alert-error {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #C62828;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 8px;
+                color: #424242;
+                font-size: 0.9em;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 14px;
+                border: 1px solid #BDBDBD;
+                border-radius: 4px;
+                font-size: 0.95em;
+                transition: all 0.2s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #1976D2;
+                    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+                }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+        }
+
+            .btn-primary:hover {
+                background: #1565C0;
+            }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+            .back-link a {
+                color: #1976D2;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+                .back-link a:hover {
+                    text-decoration: underline;
+                }
+
+        .password-hint {
+            font-size: 0.8em;
+            color: #757575;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>The Gadget Hub</h1>
+            <p>Create Your Account</p>
+        </div>
+
+        <div class="register-body">
+            @if (TempData["Error"] != null)
+            {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+            }
+
+            <form method="post" asp-action="Register">
+                <div class="form-group">
+                    <label for="customerName">Full Name</label>
+                    <input type="text"
+                           id="customerName"
+                           name="customerName"
+                           placeholder="John Doe"
+                           required
+                           autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           placeholder="you@example.com"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel"
+                           id="phone"
+                           name="phone"
+                           placeholder="555-0123"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password"
+                           id="password"
+                           name="password"
+                           placeholder="Minimum 6 characters"
+                           required
+                           minlength="6">
+                    <div class="password-hint">Must be at least 6 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password"
+                           id="confirmPassword"
+                           name="confirmPassword"
+                           placeholder="Re-enter your password"
+                           required>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="back-link">
+                <p>Already have an account? <a href="/Login/Index">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Passwords do not match. Please try again.');
+                document.getElementById('confirmPassword').focus();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+﻿@model List<GadgetHubWeb.Models.Product>
+    @{
+    ViewData["Title"] = "Order Products";
+    Layout = null;
+    var customerName = ViewBag.CustomerName as string ?? "Customer";
+    var customerId = ViewBag.CustomerId ?? 0;
+    }
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"]</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: #E3F2FD;
+                min-height: 100vh;
+                padding-bottom: 40px;
+            }
+
+            .header {
+                background: #1976D2;
+                color: white;
+                padding: 16px 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-content {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header-left h1 {
+                font-size: 1.5em;
+                font-weight: 600;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .user-name {
+                font-size: 0.9em;
+            }
+
+            .btn-logout {
+                padding: 6px 14px;
+                background: rgba(255,255,255,0.2);
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 0.85em;
+            }
+
+            .cart-icon {
+                position: relative;
+                cursor: pointer;
+                font-size: 1.5em;
+            }
+
+            .cart-badge {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                background: #FF5722;
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.6em;
+                font-weight: bold;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 24px 20px;
+                display: grid;
+                grid-template-columns: 1fr 350px;
+                gap: 24px;
+            }
+
+            .main-content {
+                min-width: 0;
+            }
+
+            .customer-info {
+                background: white;
+                padding: 16px 20px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+                .customer-info h3 {
+                    font-size: 0.9em;
+                    color: #757575;
+                    margin-bottom: 4px;
+                }
+
+                .customer-info p {
+                    font-size: 1.1em;
+                    font-weight: 600;
+                    color: #212121;
+                }
+
+            .filter-section {
+                background: white;
+                padding: 20px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .filter-row {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+
+            .filter-group label {
+                display: block;
+                font-size: 0.85em;
+                font-weight: 500;
+                color: #424242;
+                margin-bottom: 6px;
+            }
+
+            .filter-group input,
+            .filter-group select {
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid #BDBDBD;
+                border-radius: 4px;
+                font-size: 0.9em;
+            }
+
+            .filter-stats {
+                font-size: 0.85em;
+                color: #757575;
+            }
+
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 16px;
+            }
+
+            .product-card {
+                background: white;
+                border-radius: 4px;
+                padding: 16px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                transition: transform 0.2s, box-shadow 0.2s;
+                cursor: pointer;
+            }
+
+                .product-card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                }
+
+            .category-badge {
+                display: inline-block;
+                padding: 2px 8px;
+                background: #E3F2FD;
+                color: #1976D2;
+                border-radius: 10px;
+                font-size: 0.7em;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .product-name {
+                font-weight: 600;
+                color: #212121;
+                margin-bottom: 8px;
+                font-size: 0.9em;
+                line-height: 1.3;
+            }
+
+            .product-price {
+                color: #1976D2;
+                font-size: 1.1em;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+
+            .btn-add-cart {
+                width: 100%;
+                padding: 8px;
+                background: #1976D2;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 0.85em;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+                .btn-add-cart:hover {
+                    background: #1565C0;
+                }
+
+                .btn-add-cart:disabled {
+                    background: #BDBDBD;
+                    cursor: not-allowed;
+                }
+
+            .cart-sidebar {
+                position: sticky;
+                top: 80px;
+                height: fit-content;
+            }
+
+            .cart-card {
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                padding: 20px;
+            }
+
+            .cart-header {
+                font-size: 1.1em;
+                font-weight: 600;
+                color: #212121;
+                margin-bottom: 16px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #E0E0E0;
+            }
+
+            .cart-empty {
+                text-align: center;
+                color: #757575;
+                padding: 40px 20px;
+                font-size: 0.9em;
+            }
+
+            .cart-items {
+                max-height: 400px;
+                overflow-y: auto;
+                margin-bottom: 16px;
+            }
+
+            .cart-item {
+                padding: 12px;
+                border-bottom: 1px solid #F5F5F5;
+                display: flex;
+                justify-content: space-between;
+                align-items: start;
+            }
+
+            .cart-item-info {
+                flex: 1;
+            }
+
+            .cart-item-name {
+                font-weight: 500;
+                font-size: 0.85em;
+                color: #212121;
+                margin-bottom: 4px;
+            }
+
+            .cart-item-price {
+                color: #1976D2;
+                font-size: 0.8em;
+                font-weight: 600;
+            }
+
+            .cart-item-qty {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 6px;
+            }
+
+            .qty-btn {
+                width: 24px;
+                height: 24px;
+                border: 1px solid #BDBDBD;
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.9em;
+            }
+
+            .qty-value {
+                font-size: 0.85em;
+                font-weight: 600;
+                min-width: 20px;
+                text-align: center;
+            }
+
+            .btn-remove {
+                background: #F44336;
+                color: white;
+                border: none;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.75em;
+                cursor: pointer;
+            }
+
+            .cart-total {
+                padding: 16px 0;
+                border-top: 2px solid #E0E0E0;
+                margin-top: 12px;
+            }
+
+            .total-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .total-label {
+                font-size: 1em;
+                font-weight: 600;
+                color: #424242;
+            }
+
+            .total-value {
+                font-size: 1.4em;
+                font-weight: 700;
+                color: #1976D2;
+            }
+
+            .btn-checkout {
+                width: 100%;
+                padding: 14px;
+                background: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+                margin-top: 12px;
+            }
+
+                .btn-checkout:hover {
+                    background: #45a049;
+                }
+
+                .btn-checkout:disabled {
+                    background: #BDBDBD;
+                    cursor: not-allowed;
+                }
+
+            .no-products {
+                text-align: center;
+                padding: 60px 20px;
+                color: #757575;
+            }
+
+            @@media (max-width: 1024px) {
+                .container {
+                    grid-template-columns: 1fr;
+                }
+
+                .cart-sidebar {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    top: auto;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>The Gadget Hub</h1>
+                </div>
+                <div class="header-right">
+                    <div class="cart-icon" onclick="scrollToCart()">
+                        🛒
+                        <span class="cart-badge" id="cartBadge">0</span>
+                    </div>
+                    <span class="user-name">Welcome, @customerName</span>
+                    <a href="@Url.Action("MyOrders", "Order")"
+                       style="padding: 6px 14px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; text-decoration: none; border-radius: 4px; font-size: 0.85em;">
+                        📦 My Orders
+                    </a>
+                    <a href="/Login/Logout" class="btn-logout">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="main-content">
+                <div class="customer-info">
+                    <h3>Ordering for:</h3>
+                    <p>@customerName</p>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Search Products</label>
+                            <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterProducts()">
+                        </div>
+                        <div class="filter-group">
+                            <label>Category</label>
+                            <select id="categoryFilter" onchange="filterProducts()">
+                                <option value="">All Categories</option>
+                                <option value="Audio">Audio</option>
+                                <option value="Wearables">Wearables</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="Smart Home">Smart Home</option>
+                                <option value="Computing">Computing</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Sort By</label>
+                            <select id="sortFilter" onchange="sortProducts()">
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                                <option value="price-asc">Price (Low-High)</option>
+                                <option value="price-desc">Price (High-Low)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-stats" id="filterStats">Showing @Model.Count of @Model.Count products</div>
+                </div>
+
+                <div class="products-grid" id="productsGrid">
+                    @foreach (var product in Model)
+                {
+                    <div class="product-card" data-product-id="@product.ProductId" data-category="@product.Category" data-name="@product.ProductName" data-price="@product.BasePrice">
+                        <span class="category-badge">@product.Category</span>
+                        <div class="product-name">@product.ProductName</div>
+                        <div class="product-price">Rs. @product.BasePrice.ToString("N2")</div>
+                        <button class="btn-add-cart" onclick="addToCart(@product.ProductId, '@product.ProductName.Replace("'", "\\'"))', @product.BasePrice)">
+                            Add to Cart
+                        </button>
+                    </div>
+                }
+                </div>
+
+                @if (!Model.Any())
+            {
+                <div class="no-products">
+                    <h3>No products available</h3>
+                    <p>Please check back later.</p>
+                </div>
+            }
+            </div>
+
+            <div class="cart-sidebar">
+                <div class="cart-card">
+                    <div class="cart-header">
+                        Shopping Cart (<span id="cartCount">0</span>)
+                    </div>
+
+                    <div id="cartEmpty" class="cart-empty">
+                        Your cart is empty
+                    </div>
+
+                    <div id="cartContent" style="display: none;">
+                        <div class="cart-items" id="cartItems"></div>
+
+                        <div class="cart-total">
+                            <div class="total-row">
+                                <span class="total-label">Total</span>
+                                <span class="total-value" id="cartTotal">Rs. 0.00</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-checkout" onclick="proceedToCheckout()" id="checkoutBtn">
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        let cart = [];
+
+        function addToCart(productId, productName, price) {
+            const existingItem = cart.find(item => item.productId === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    productId: productId,
+                    productName: productName,
+                    price: price,
+                    quantity: 1
+                });
+            }
+
+            updateCart();
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.productId !== productId);
+            updateCart();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(i => i.productId === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCart();
+                }
+            }
+        }
+
+        function updateCart() {
+            const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            document.getElementById('cartBadge').textContent = cartCount;
+            document.getElementById('cartCount').textContent = cartCount;
+            document.getElementById('cartTotal').textContent = 'Rs. ' + cartTotal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            if (cart.length === 0) {
+                document.getElementById('cartEmpty').style.display = 'block';
+                document.getElementById('cartContent').style.display = 'none';
+            } else {
+                document.getElementById('cartEmpty').style.display = 'none';
+                document.getElementById('cartContent').style.display = 'block';
+
+                const cartItemsHtml = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.productName}</div>
+                            <div class="cart-item-price">Rs. ${item.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                            <div class="cart-item-qty">
+                                <button class="qty-btn" onclick="updateQuantity(${item.productId}, -1)">-</button>
+                                <span class="qty-value">${item.quantity}</span>
+                                <button class="qty-btn" onclick="updateQuantity(${item.productId}, 1)">+</button>
+                            </div>
+                        </div>
+                        <button class="btn-remove" onclick="removeFromCart(${item.productId})">Remove</button>
+                    </div>
+                `).join('');
+
+                document.getElementById('cartItems').innerHTML = cartItemsHtml;
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Order/PlaceOrder';
+
+            const customerIdInput = document.createElement('input');
+            customerIdInput.type = 'hidden';
+            customerIdInput.name = 'CustomerId';
+            customerIdInput.value = '@customerId';
+            form.appendChild(customerIdInput);
+
+            const customerNameInput = document.createElement('input');
+            customerNameInput.type = 'hidden';
+            customerNameInput.name = 'CustomerName';
+            customerNameInput.value = '@customerName';
+            form.appendChild(customerNameInput);
+
+            cart.forEach((item, index) => {
+                const productIdInput = document.createElement('input');
+                productIdInput.type = 'hidden';
+                productIdInput.name = `Items[${index}].ProductId`;
+                productIdInput.value = item.productId;
+                form.appendChild(productIdInput);
+
+                const productNameInput = document.createElement('input');
+                productNameInput.type = 'hidden';
+                productNameInput.name = `Items[${index}].ProductName`;
+                productNameInput.value = item.productName;
+                form.appendChild(productNameInput);
+
+                const quantityInput = document.createElement('input');
+                quantityInput.type = 'hidden';
+                quantityInput.name = `Items[${index}].Quantity`;
+                quantityInput.value = item.quantity;
+                form.appendChild(quantityInput);
+
+                const priceInput = document.createElement('input');
+                priceInput.type = 'hidden';
+                priceInput.name = `Items[${index}].UnitPrice`;
+                priceInput.value = item.price;
+                form.appendChild(priceInput);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function scrollToCart() {
+            if (window.innerWidth > 1024) {
+                document.querySelector('.cart-sidebar').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const cards = document.querySelectorAll('.product-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const cardCategory = card.getAttribute('data-category');
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesCategory = !category || cardCategory === category;
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('filterStats').textContent = `Showing ${visibleCount} of @Model.Count products`;
+        }
+
+        function sortProducts() {
+            const sortValue = document.getElementById('sortFilter').value;
+            const grid = document.getElementById('productsGrid');
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+
+            cards.sort((a, b) => {
+                const nameA = a.getAttribute('data-name');
+                const nameB = b.getAttribute('data-name');
+                const priceA = parseFloat(a.getAttribute('data-price'));
+                const priceB = parseFloat(b.getAttribute('data-price'));
+
+                switch(sortValue) {
+                    case 'name-asc': return nameA.localeCompare(nameB);
+                    case 'name-desc': return nameB.localeCompare(nameA);
+                    case 'price-asc': return priceA - priceB;
+                    case 'price-desc': return priceB - priceA;
+                    default: return 0;
+                }
+            });
+
+            cards.forEach(card => grid.appendChild(card));
+        }
+
+        // Initialize
+        updateCart();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,400 @@
+﻿@model List<GadgetHubWeb.Models.CustomerOrderViewModel>
+    @{
+    ViewData["Title"] = "My Orders";
+    Layout = null;
+    var customerName = ViewBag.CustomerName as string ?? "Customer";
+    }
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Orders - The Gadget Hub</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Segoe UI', sans-serif;
+                background: #E3F2FD;
+                min-height: 100vh;
+            }
+
+            .header {
+                background: #1976D2;
+                color: white;
+                padding: 16px 0;
+            }
+
+            .header-content {
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 0 24px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+                font-weight: 600;
+            }
+
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .btn-nav {
+                padding: 8px 14px;
+                border-radius: 4px;
+                text-decoration: none;
+                font-size: 0.85em;
+                font-weight: 500;
+            }
+
+            .btn-white {
+                background: white;
+                color: #1976D2;
+            }
+
+            .btn-ghost {
+                background: rgba(255,255,255,0.2);
+                color: white;
+                border: 1px solid rgba(255,255,255,0.3);
+            }
+
+            .container {
+                max-width: 1000px;
+                margin: 30px auto;
+                padding: 0 24px;
+            }
+
+            .summary-row {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+
+            .summary-card {
+                flex: 1;
+                background: white;
+                padding: 16px;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                border-left: 4px solid #1976D2;
+                text-align: center;
+            }
+
+            .summary-value {
+                font-size: 1.8em;
+                font-weight: 700;
+                color: #212121;
+            }
+
+            .summary-label {
+                font-size: 0.75em;
+                color: #757575;
+                text-transform: uppercase;
+                margin-top: 4px;
+            }
+
+            .tabs {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+
+            .tab {
+                padding: 10px 20px;
+                border-radius: 4px;
+                font-size: 0.9em;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                transition: all 0.2s;
+            }
+
+            .tab-active {
+                background: #1976D2;
+                color: white;
+            }
+
+            .tab-inactive {
+                background: white;
+                color: #757575;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+            .order-card {
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                margin-bottom: 16px;
+                overflow: hidden;
+            }
+
+            .order-header {
+                padding: 16px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #F5F5F5;
+            }
+
+            .order-id {
+                font-weight: 700;
+                font-size: 1.1em;
+                color: #1976D2;
+            }
+
+            .order-date {
+                font-size: 0.82em;
+                color: #757575;
+                margin-top: 2px;
+            }
+
+            .status-badge {
+                display: inline-block;
+                padding: 5px 12px;
+                border-radius: 12px;
+                font-size: 0.82em;
+                font-weight: 600;
+            }
+
+            .s-confirmed {
+                background: #E8F5E9;
+                color: #2E7D32;
+            }
+
+            .s-awaiting {
+                background: #E3F2FD;
+                color: #1565C0;
+            }
+
+            .s-pending {
+                background: #FFF3E0;
+                color: #E65100;
+            }
+
+            .s-rejected {
+                background: #FFEBEE;
+                color: #C62828;
+            }
+
+            .order-body {
+                padding: 16px 20px;
+            }
+
+            .order-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 6px 0;
+                font-size: 0.88em;
+                border-bottom: 1px solid #FAFAFA;
+                color: #424242;
+            }
+
+                .order-item:last-child {
+                    border-bottom: none;
+                }
+
+            .order-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 20px;
+                background: #FAFAFA;
+                border-top: 1px solid #F0F0F0;
+            }
+
+            .order-total {
+                font-size: 1.1em;
+                font-weight: 700;
+                color: #1976D2;
+            }
+
+            .order-meta {
+                font-size: 0.82em;
+                color: #757575;
+                margin-top: 2px;
+            }
+
+            .btn-track {
+                padding: 8px 16px;
+                background: #1976D2;
+                color: white;
+                border-radius: 4px;
+                text-decoration: none;
+                font-size: 0.85em;
+                font-weight: 500;
+            }
+
+            .split-badge {
+                background: #FF9800;
+                color: white;
+                padding: 2px 7px;
+                border-radius: 10px;
+                font-size: 0.68em;
+                font-weight: 600;
+                margin-left: 6px;
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 80px 20px;
+                background: white;
+                border-radius: 4px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                color: #757575;
+            }
+
+            .empty-icon {
+                font-size: 4em;
+                margin-bottom: 16px;
+            }
+
+            .btn-shop {
+                display: inline-block;
+                margin-top: 20px;
+                padding: 12px 24px;
+                background: #1976D2;
+                color: white;
+                border-radius: 4px;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header-content">
+                <h1>📦 My Orders</h1>
+                <div class="header-right">
+                    <span style="font-size: 0.9em;">@customerName</span>
+                    <a href="@Url.Action("Create", "Order")" class="btn-nav btn-white">🛒 Shop</a>
+                    <a href="/Login/Logout" class="btn-nav btn-ghost">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            @if (Model != null && Model.Any())
+        {
+            var confirmed = Model.Where(o => o.Status == "Confirmed").ToList();
+            var pending = Model.Where(o => o.Status != "Confirmed").ToList();
+
+            <!-- Summary -->
+            <div class="summary-row">
+                <div class="summary-card">
+                    <div class="summary-value">@Model.Count</div>
+                    <div class="summary-label">Total Orders</div>
+                </div>
+                <div class="summary-card" style="border-left-color: #4CAF50;">
+                    <div class="summary-value">@confirmed.Count</div>
+                    <div class="summary-label">Confirmed</div>
+                </div>
+                <div class="summary-card" style="border-left-color: #FF9800;">
+                    <div class="summary-value">@pending.Count</div>
+                    <div class="summary-label">Pending</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value">Rs. @Model.Sum(o => o.TotalAmount).ToString("N0")</div>
+                    <div class="summary-label">Total Spent</div>
+                </div>
+            </div>
+
+ <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab tab-active" onclick="showTab('all', this)">
+                    All Orders (@Model.Count)
+                </button>
+                <button class="tab tab-inactive" onclick="showTab('confirmed', this)">
+                    ✅ Confirmed (@confirmed.Count)
+                </button>
+                <button class="tab tab-inactive" onclick="showTab('pending', this)">
+                    ⏳ Pending (@pending.Count)
+                </button>
+            </div>
+
+ <!-- All Orders -->
+            <div id="tab-all">
+                @foreach (var order in Model)
+                {
+                @await Html.PartialAsync("_OrderCard", order)
+                }
+            </div>
+
+ <!-- Confirmed Orders -->
+            <div id="tab-confirmed" class="hidden">
+                @if (confirmed.Any())
+                {
+                foreach (var order in confirmed)
+                    {
+                @await Html.PartialAsync("_OrderCard", order)
+                    }
+                }
+                else
+                {
+                <div class="empty-state">
+                    <div class="empty-icon">⏳</div>
+                    <p>No confirmed orders yet</p>
+                </div>
+                }
+            </div>
+
+ <!-- Pending Orders -->
+            <div id="tab-pending" class="hidden">
+                @if (pending.Any())
+                {
+                foreach (var order in pending)
+                    {
+                @await Html.PartialAsync("_OrderCard", order)
+                    }
+                }
+                else
+                {
+                <div class="empty-state">
+                    <div class="empty-icon">✅</div>
+                    <p>All orders confirmed!</p>
+                </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <p style="font-size: 1.2em; font-weight: 600; margin-bottom: 8px;">No Orders Yet</p>
+                <p>You haven't placed any orders yet.</p>
+                <a href="@Url.Action("Create", "Order")" class="btn-shop">Start Shopping</a>
+            </div>
+        }
+        </div>
+
+        <script>
+        function showTab(tab, btn) {
+            document.getElementById('tab-all').classList.add('hidden');
+            document.getElementById('tab-confirmed').classList.add('hidden');
+            document.getElementById('tab-pending').classList.add('hidden');
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('tab-active');
+                t.classList.add('tab-inactive');
+            });
+            btn.classList.add('tab-active');
+            btn.classList.remove('tab-inactive');
+        }
+        </script>
+    </body>
+</html>

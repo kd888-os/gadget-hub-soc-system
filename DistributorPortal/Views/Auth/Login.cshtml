@@ -1,0 +1,203 @@
+﻿@model DistributorPortal.Models.LoginViewModel
+@{
+    ViewData["Title"] = "Distributor Portal Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #E3F2FD;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .login-header {
+            background: #1976D2;
+            color: white;
+            padding: 32px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+            .login-header h1 {
+                font-size: 1.8em;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .login-header p {
+                font-size: 0.95em;
+                opacity: 0.95;
+                font-weight: 400;
+            }
+
+        .login-body {
+            padding: 32px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .alert-error {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #C62828;
+        }
+
+        .alert-success {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #2E7D32;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 8px;
+                color: #424242;
+                font-size: 0.9em;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px 14px;
+                border: 1px solid #BDBDBD;
+                border-radius: 4px;
+                font-size: 0.95em;
+                transition: all 0.2s;
+            }
+
+                .form-group input:focus {
+                    outline: none;
+                    border-color: #1976D2;
+                    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+                }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #1976D2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-login:hover {
+                background: #1565C0;
+            }
+
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 16px;
+            background: #E3F2FD;
+            border-radius: 4px;
+            border-left: 4px solid #1976D2;
+        }
+
+            .demo-credentials strong {
+                display: block;
+                margin-bottom: 12px;
+                color: #1976D2;
+                font-size: 0.95em;
+            }
+
+        .credential-item {
+            margin: 6px 0;
+            font-size: 0.85em;
+            color: #424242;
+        }
+
+        .credential-label {
+            font-weight: 600;
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Distributor Portal</h1>
+            <p>Staff Login System</p>
+        </div>
+
+        <div class="login-body">
+            @if (TempData["Error"] != null)
+            {
+            <div class="alert alert-error">
+                @TempData["Error"]
+            </div>
+            }
+
+            @if (TempData["Success"] != null)
+            {
+            <div class="alert alert-success">
+                @TempData["Success"]
+            </div>
+            }
+
+            <form method="post" asp-action="Login">
+                <div class="form-group">
+                    <label for="Username">Username</label>
+                    <input type="text" id="Username" name="Username" placeholder="Enter your username" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input type="password" id="Password" name="Password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn-login">Login to Portal</button>
+            </form>
+
+            <div class="demo-credentials">
+                <strong>Demo Credentials</strong>
+                <div class="credential-item">
+                    <span class="credential-label">TechWorld:</span> techworld / tech123
+                </div>
+                <div class="credential-item">
+                    <span class="credential-label">ElectroCom:</span> electrocom / electro123
+                </div>
+                <div class="credential-item">
+                    <span class="credential-label">Gadget Central:</span> gadgetcentral / gadget123
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
